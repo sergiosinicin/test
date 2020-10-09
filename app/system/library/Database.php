@@ -1,6 +1,7 @@
 <?php
 
-class Database {
+class Database
+{
     private $host = DB_HOSTNAME;
     private $dbUser = DB_USERNAME;
     private $dbPass = DB_PASSWORD;
@@ -32,7 +33,8 @@ class Database {
     /**
      * @param $sql
      */
-    public function query($sql) {
+    public function query($sql)
+    {
         $this->dbStatement = $this->dbHandler->prepare($sql);
     }
 
@@ -41,8 +43,9 @@ class Database {
      * @param $value
      * @param  null  $type
      */
-    public function bind($param, $value, $type = null) {
-        if(is_null($type)) {
+    public function bind($param, $value, $type = null)
+    {
+        if (is_null($type)) {
             switch ($value) {
                 case is_int($value):
                     $type = PDO::PARAM_INT;
@@ -64,7 +67,8 @@ class Database {
     /**
      * @return bool
      */
-    public function execute() {
+    public function execute()
+    {
         return $this->dbStatement->execute();
     }
 
@@ -72,7 +76,8 @@ class Database {
      * @param  int  $mode
      * @return array
      */
-    public function resultSet(int $mode = PDO::FETCH_OBJ) {
+    public function resultSet(int $mode = PDO::FETCH_OBJ)
+    {
         $this->execute();
         return $this->dbStatement->fetchAll($mode);
     }
@@ -82,7 +87,8 @@ class Database {
      * @param  int  $mode
      * @return mixed
      */
-    public function single(int $mode = PDO::FETCH_OBJ) {
+    public function single(int $mode = PDO::FETCH_OBJ)
+    {
         $this->execute();
         return $this->dbStatement->fetch($mode);
     }
@@ -90,11 +96,13 @@ class Database {
     /**
      * @return int
      */
-    public function rowCount() {
+    public function rowCount()
+    {
         return $this->dbStatement->rowCount();
     }
 
-    public function getLastId() {
+    public function getLastId()
+    {
         return $this->dbHandler->lastInsertId();
     }
 }

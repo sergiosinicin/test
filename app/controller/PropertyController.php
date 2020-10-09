@@ -17,11 +17,11 @@ class PropertyController extends Controller
     public function index()
     {
         $data['scripts'] = [
-           // '/assets/js/datatables.min.js',
+            // '/assets/js/datatables.min.js',
             '/assets/js/ajax.js',
         ];
         $data['styles'] = [
-           // '/assets/css/datatables.css',
+            // '/assets/css/datatables.css',
         ];
 
         $data['property_type'] = $this->propertyTypeModel->getAll();
@@ -87,10 +87,11 @@ class PropertyController extends Controller
     /**
      * @param  null  $propertyId
      */
-    public function getProperty($propertyId = null) {
-        if($propertyId) {
+    public function getProperty($propertyId = null)
+    {
+        if ($propertyId) {
             $result = $this->propertyModel->getById($propertyId);
-            if($result) {
+            if ($result) {
                 $json['data'] = $result;
             } else {
                 $json = ['error' => 'Property not found, refresh page'];
@@ -103,11 +104,12 @@ class PropertyController extends Controller
         echo json_encode($json);
     }
 
-    public function delete() {
+    public function delete()
+    {
         $propertyId = $_POST['property_id'] ?? null;
-        if($propertyId) {
+        if ($propertyId) {
             $this->propertyModel->deleteProperty($propertyId);
-            $json = ['success'=> 'Property added successfully'];
+            $json = ['success' => 'Property added successfully'];
         } else {
             $json = ['error' => 'Unknown id, refresh form'];
         }
@@ -116,17 +118,18 @@ class PropertyController extends Controller
         echo json_encode($json);
     }
 
-    public function update() {
+    public function update()
+    {
         $data = $_POST;
         $propertyId = $data['property_id'] ?? null;
-        if($propertyId) {
+        if ($propertyId) {
             $json = $this->validateForm($data);
-            if(true === $json) {
+            if (true === $json) {
                 $property = $this->propertyModel->getById($propertyId);
                 $data = saveUploadedImage($data);
                 $data = array_merge($property, $data);
                 $this->propertyModel->updateProperty($propertyId, $data);
-                $json = ['success'=> 'Property updated successfully'];
+                $json = ['success' => 'Property updated successfully'];
             }
         } else {
             $json = ['error' => 'Unknown id, refresh form'];
@@ -136,14 +139,15 @@ class PropertyController extends Controller
         echo json_encode($json);
     }
 
-    public function create() {
+    public function create()
+    {
         $data = $_POST;
         $json = $this->validateForm($data);
-        if(true === $json) {
+        if (true === $json) {
             $data = saveUploadedImage($data);
             $data['uuid'] = generateUUID();
             $this->propertyModel->addProperty($data);
-            $json = ['success'=> 'Property added successfully'];
+            $json = ['success' => 'Property added successfully'];
         }
 
         header('Content-Type: application/json');
@@ -158,21 +162,22 @@ class PropertyController extends Controller
             'search' => [],
         ];
 
-        foreach($_POST['columns'] as $item) {
-            if($item['searchable'] == 'true' && $item['search']['value']) {
+        foreach ($_POST['columns'] as $item) {
+            if ($item['searchable'] == 'true' && $item['search']['value']) {
                 $key = $item['data'];
                 $parameters['search'][$key] = $item['search']['value'];
             }
         }
 
         $data = $this->propertyModel->getDatatableFormatted($parameters);
-        $data["draw"] = (int)($_POST["draw"] ?? 0);
+        $data["draw"] = (int) ($_POST["draw"] ?? 0);
 
         header('Content-Type: application/json');
         echo json_encode($data);
     }
 
-    private function validateForm($data) {
+    private function validateForm($data)
+    {
         $requiredFields = [
             'county',
             'country',
@@ -182,17 +187,17 @@ class PropertyController extends Controller
 //            'latitude',
             'num_bedrooms',
             'num_bathrooms',
-           // 'image_thumbnail',
-          //  'image_full',
+            // 'image_thumbnail',
+            //  'image_full',
             'description',
             'price',
             'type',
             'property_type_id'
         ];
 
-        foreach($requiredFields as $field) {
-            if(empty($data[$field])) {
-                return ['error'=>'Please, fill required fields','field'=>$field];
+        foreach ($requiredFields as $field) {
+            if (empty($data[$field])) {
+                return ['error' => 'Please, fill required fields', 'field' => $field];
             }
         }
 

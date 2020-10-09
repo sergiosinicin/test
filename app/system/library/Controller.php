@@ -7,26 +7,28 @@
 class Controller
 {
     /**
-     * @param string $model
+     * @param  string  $model
      * @return mixed
      */
-    public function model($model) {
-        if(!is_file(DIR_MODEL.$model.'.php')) {
-           dd("Model ".DIR_MODEL.$model.".php is not found");
+    public function model($model)
+    {
+        if (!is_file(DIR_MODEL.$model.'.php')) {
+            dd("Model ".DIR_MODEL.$model.".php is not found");
         }
 
-        require_once  DIR_MODEL.$model.'.php';
+        require_once DIR_MODEL.$model.'.php';
 
-        $result =  new $model();
+        $result = new $model();
         return $result;
     }
 
     /**
-     * @param string $view
+     * @param  string  $view
      * @param $data
      */
-    public function view($view, $data = []) {
-        if(!is_file(DIR_TEMPLATE.$view.'.php')) {
+    public function view($view, $data = [])
+    {
+        if (!is_file(DIR_TEMPLATE.$view.'.php')) {
             dd('View does not exists');
         }
 

@@ -24,7 +24,8 @@ class PropertyTypeModel
         return $results;
     }
 
-    public function getAllIndexed() {
+    public function getAllIndexed()
+    {
         $result = [];
         $types = $this->getAll();
         foreach ($types as $type) {
@@ -41,8 +42,6 @@ class PropertyTypeModel
      */
     public function getById(int $id)
     {
-        $key = 'property_type_id';
-
         $this->db->query('SELECT * FROM property_type WHERE id=:id');
 
         $this->db->bind(':id', $id);
@@ -85,7 +84,6 @@ class PropertyTypeModel
         $this->db->query('INSERT INTO property_type (id,title,description,created_at,updated_at) 
                         VALUES (:id,:title,:description,:created_at,:updated_at)'
         );
-
 
         $this->db->bind(':id', $data['id']);
         $this->db->bind(':title', $data['title']);

@@ -204,5 +204,4 @@ class Image
         $this->width = $bottom_x - $top_x;
         $this->height = $bottom_y - $top_y;
     }
-
 }

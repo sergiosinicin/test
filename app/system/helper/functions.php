@@ -26,7 +26,7 @@ function saveImageByUrl(array $propertyData)
     }
 
     if (!file_exists($dir.md5($propertyData['image_full']).'x100x100.jpg')) {
-        $result = resizeImage($dir, md5($propertyData['image_full']),'jpg');
+        $result = resizeImage($dir, md5($propertyData['image_full']), 'jpg');
     }
 
     if (empty($result['error'])) {
@@ -119,7 +119,8 @@ function getImageDir($subFolder = '')
     return rtrim($dir, '/').'/';
 }
 
-function generateUUID(){
+function generateUUID()
+{
     return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
         mt_rand(0, 0xffff), mt_rand(0, 0xffff),
         mt_rand(0, 0xffff),

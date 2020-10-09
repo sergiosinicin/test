@@ -4,23 +4,23 @@ class App
 {
     /**
      * default controller
-     * @var $controller
      * @param 'MainController'
+     * @var $controller
      */
     protected $controller = 'PropertyController';
 
     /**
      * default method
-     * @var $method
      * @param 'index'
+     * @var $method
      */
 
     protected $method = 'index';
 
     /**
      * parameter
-     * @var $params
      * @param [array]
+     * @var $params
      */
 
     protected $params = [];
@@ -37,11 +37,11 @@ class App
          * $this->controller
          *
          */
-        if (file_exists(DIR_CONTROLLER.ucwords($url[0]) . '.php')) {
+        if (file_exists(DIR_CONTROLLER.ucwords($url[0]).'.php')) {
             $this->controller = ucwords($url[0]);
             unset($url[0]);
-        }else{
-            dd(DIR_CONTROLLER.ucwords($url[0]) . '.php not found');
+        } else {
+            dd(DIR_CONTROLLER.ucwords($url[0]).'.php not found');
         }
 
         /**
@@ -66,7 +66,6 @@ class App
         /**
          * check $url
          */
-
         if (!empty($url)) {
             $this->params = array_values($url);
         }
@@ -76,14 +75,12 @@ class App
      *
      * function for parse url
      */
-
     public function parseURL()
     {
-        if (isset($_GET['url']))
-        {
-            $url 	= explode('/', filter_var(trim($_GET['url']), FILTER_SANITIZE_URL));
-            $url[0] = $url[0] . 'Controller';
-        }else{
+        if (isset($_GET['url'])) {
+            $url = explode('/', filter_var(trim($_GET['url']), FILTER_SANITIZE_URL));
+            $url[0] = $url[0].'Controller';
+        } else {
             $url[0] = $this->controller;
         }
 
@@ -97,7 +94,6 @@ class App
      * @return  $this->method
      * @return  $this->params
      */
-
     public function run()
     {
         return call_user_func_array([$this->controller, $this->method], $this->params);

@@ -8,19 +8,30 @@ class Curl
     private $json;
     /** @var string */
     private $httpCode;
-    /** @var string  */
+    /** @var string */
     private $url;
-    /** @var string  */
+    /** @var string */
     private $method;
 
+    /**
+     * Curl constructor.
+     * @param  string  $url
+     * @param  string  $method
+     */
     public function __construct($url = '', $method = 'GET')
     {
-        $this->ch = $this->ch	= curl_init();
+        $this->ch = $this->ch = curl_init();
         $this->url = $url;
         $this->method = $method;
     }
 
-    public function query($url = '', $method = '') {
+    /**
+     * @param  string  $url
+     * @param  string  $method
+     * @return $this
+     */
+    public function query($url = '', $method = '')
+    {
         $refer = php_sapi_name() === 'cli' ? '127.0.0.1' : $_SERVER['HTTP_HOST'];
         $url = $url ?: $this->url;
         $method = $method ?: $this->method;
@@ -32,7 +43,7 @@ class Curl
         curl_setopt($this->ch, CURLOPT_REFERER, $refer);
         curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, $method);
 
-        $this->result	= curl_exec($this->ch);
+        $this->result = curl_exec($this->ch);
         $this->json = json_decode($this->result, true);
 
         $this->httpCode = curl_getinfo($this->ch, CURLINFO_HTTP_CODE);
@@ -40,13 +51,14 @@ class Curl
         return $this;
     }
 
-    public function close() {
+    public function close()
+    {
         curl_close($this->ch);
     }
 
     public function __destruct()
     {
-       $this->close();
+        $this->close();
     }
 
     /**
