@@ -10,6 +10,7 @@ class PropertyController extends Controller
 
     public function __construct()
     {
+        parent::__construct();
         $this->propertyModel = $this->model('PropertyModel');
         $this->propertyTypeModel = $this->model('PropertyTypeModel');
     }
@@ -17,11 +18,11 @@ class PropertyController extends Controller
     public function index()
     {
         $data['scripts'] = [
-            // '/assets/js/datatables.min.js',
-            '/assets/js/ajax.js',
+            '/assets/js/datatables.min.js',
+            '/assets/js/property.js',
         ];
         $data['styles'] = [
-            // '/assets/css/datatables.css',
+            '/assets/css/datatables.css',
         ];
 
         $data['property_type'] = $this->propertyTypeModel->getAll();
@@ -85,9 +86,9 @@ class PropertyController extends Controller
     }
 
     /**
-     * @param  null  $propertyId
+     * @param  int  $propertyId
      */
-    public function getProperty($propertyId = null)
+    public function getProperty(int $propertyId)
     {
         if ($propertyId) {
             $result = $this->propertyModel->getById($propertyId);
@@ -106,7 +107,7 @@ class PropertyController extends Controller
 
     public function delete()
     {
-        $propertyId = $_POST['property_id'] ?? null;
+        $propertyId = $this->request->post('property_id');
         if ($propertyId) {
             $this->propertyModel->deleteProperty($propertyId);
             $json = ['success' => 'Property added successfully'];
@@ -120,9 +121,8 @@ class PropertyController extends Controller
 
     public function update()
     {
-        $data = $_POST;
-        $propertyId = $data['property_id'] ?? null;
-        if ($propertyId) {
+        if ($propertyId = $this->request->post('property_id')) {
+            $data = $this->request->postAll();
             $json = $this->validateForm($data);
             if (true === $json) {
                 $property = $this->propertyModel->getById($propertyId);
@@ -141,7 +141,7 @@ class PropertyController extends Controller
 
     public function create()
     {
-        $data = $_POST;
+        $data = $this->request->postAll();
         $json = $this->validateForm($data);
         if (true === $json) {
             $data = saveUploadedImage($data);
@@ -154,15 +154,16 @@ class PropertyController extends Controller
         echo json_encode($json);
     }
 
-    public function getData()
+    public function getProperties()
     {
         $parameters = [
-            'start' => $_POST['start'] ?? 0,
-            'length' => $_POST['length'] ?? 10,
+            'start' => $this->request->post('start', 0),
+            'length' => $this->request->post('length', 10),
             'search' => [],
         ];
 
-        foreach ($_POST['columns'] as $item) {
+        $columns = $this->request->post('columns');
+        foreach ($columns as $item) {
             if ($item['searchable'] == 'true' && $item['search']['value']) {
                 $key = $item['data'];
                 $parameters['search'][$key] = $item['search']['value'];
@@ -170,7 +171,7 @@ class PropertyController extends Controller
         }
 
         $data = $this->propertyModel->getDatatableFormatted($parameters);
-        $data["draw"] = (int) ($_POST["draw"] ?? 0);
+        $data["draw"] = (int) $this->request->post('draw', 0);
 
         header('Content-Type: application/json');
         echo json_encode($data);

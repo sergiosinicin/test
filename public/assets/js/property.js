@@ -1,11 +1,11 @@
-document.addEventListener("DOMContentLoaded", function(event) {
+document.addEventListener("DOMContentLoaded", function () {
 	let url = '/property';
 	let properties = $('#properties-list').DataTable({
 		"processing": true,
 		"serverSide": true,
 		"pageLength": 10,
 
-		"dom" : "Bfrtip",
+		"dom": "Brtip",
 		"pagingType": "full_numbers",
 		"responsive": true,
 
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 				"data":"image_thumbnail",
                 "searchable":false,
 				"render": function (data) {
-					return '<img src="'+data+'">';
+					return '<img src="' + data + '" alt="">';
 				}
 			},
 			{ "data": "county" },
@@ -53,14 +53,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			{
 				"data":"id",
 				"render": function (data) {
-					return '<a data-propertyid="'+data+'" class="text-white btn btn-success btn-sm update-property"> Edit </a>' +
+					return '<a data-propertyid="' + data + '" class="text-white btn btn-success btn-sm edit-property"> Edit </a>' +
 						'<a data-propertyid="'+data+'" class="text-white btn btn-danger btn-sm delete-property"> Delete</a>';
 				}
 			},
 		],
 
 		"ajax": {
-			url: url+'/getData',
+			url: url + '/getProperties',
 			type: "POST",
 			dataType: "json"
 		},
@@ -94,9 +94,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		$('#action').val('create');
 	});
 
-	properties.on('click', '.update-property', function()
-	{
-		var propertyId = $(this).data("propertyid");
+	properties.on('click', '.edit-property', function () {
+		let propertyId = $(this).data("propertyid");
 		$.ajax({
 			url: url+'/getProperty/'+ propertyId,
 			method:"GET",
@@ -105,11 +104,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
 				$.each(json.data, function (i, v) {
 					if($.inArray(i,['num_bedrooms','num_bathrooms','property_type_id']) !== -1) {
 						$('#'+i ).find('option[value="'+v+'"]').attr('selected','selected')
-					} else if(i == 'image_thumbnail') {
+					} else if (i === 'image_thumbnail') {
 						$('#' + i).attr('src', v);
-					} else if(i=='type') {
+					} else if (i === 'type') {
 						$.each($('input[name="type"]'),function(i,type){
-							if($(type).val() == v) {
+							if ($(type).val() === v) {
 								$(type).trigger('click');
 							}
 						})
@@ -127,13 +126,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
 			}
 		})
 	}).on('click', '.delete-property', function(){
-		var property_id = $(this).data("propertyid");
-		var action = "delete";
 		if(confirm("Are you sure you want to delete this properties?")) {
+			let propertyId = $(this).data("propertyid");
 			$.ajax({
 				url:url+'/delete',
 				method:"POST",
-				data:{property_id:property_id, action:action},
+				data: {property_id: propertyId},
 				success:function(data) {
 					properties.ajax.reload();
 				}
@@ -145,22 +143,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 	$(document).on('submit','#property-form', function(e){
 		e.preventDefault();
-		// let formData = $('form#property-form').serialize();
-        // var files = $('#file')[0].files[0];
-        // formData.append('file',files);
 
-        var form = $(this);
-        var formdata = false;
-        if (window.FormData){
-            formdata = new FormData(form[0]);
+		let form = $(this);
+		let formData = false;
+		if (window.FormData) {
+			formData = new FormData(form[0]);
         }
-        var formAction = form.attr('action');
-
 		$('.js-alert').remove();
-		//$(this).button('loading');
+
 		$.ajax({
 			url:url+'/'+$('#action').val(),
-            data        : formdata ? formdata : form.serialize(),
+			data: formData ? formData : form.serialize(),
             cache       : false,
             contentType : false,
             processData : false,
@@ -182,23 +175,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
 					properties.ajax.reload();
 					$('#property-form')[0].reset();
 				}
-				//$(this).button('reset');
+
 			}
 		})
 	});
-
-	$(document).on('click','#populate-db', function (e) {
-		e.preventDefault();
-		$(this).button('loading');
-		$.ajax({
-			url:url+'/populateDb',
-			method:"GET",
-			success:function(data) {
-				properties.ajax.reload();
-				$(this).button('reset');
-			}
-		})
-	});
-
-
 });

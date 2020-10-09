@@ -7,6 +7,16 @@
 class Controller
 {
     /**
+     * @var Request
+     */
+    protected $request;
+
+    public function __construct()
+    {
+        $this->request = new Request();
+    }
+
+    /**
      * @param  string  $model
      * @return mixed
      */
