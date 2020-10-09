@@ -30,8 +30,8 @@ function saveImageByUrl(array $propertyData)
     }
 
     if (empty($result['error'])) {
-        $propertyData['image_thumbnail'] = $subFolder.'/'.md5($fileName).'x100x100.jpg';
-        $propertyData['image_full'] = $subFolder.'/'.$fileName;
+        $propertyData['image_thumbnail'] = '/images/'.$subFolder.'/'.md5($propertyData['image_full']).'x100x100.jpg';
+        $propertyData['image_full'] = '/images/'.$subFolder.'/'.$fileName;
     }
 
     return $propertyData;
@@ -91,8 +91,8 @@ function saveUploadedImage(array $propertyData)
                 move_uploaded_file($_FILES["image_full"]["tmp_name"], $dir.md5($filename).'.'.$ext);
                 resizeImage($dir, md5($filename), $ext);
 
-                $propertyData['image_thumbnail'] = $subFolder.'/'.md5($filename).'x100x100.'.$ext;
-                $propertyData['image_full'] = $subFolder.'/'.md5($filename).'.'.$ext;
+                $propertyData['image_thumbnail'] = '/images/'.$subFolder.'/'.md5($filename).'x100x100.'.$ext;
+                $propertyData['image_full'] = '/images/'.$subFolder.'/'.md5($filename).'.'.$ext;
 
 
             }
