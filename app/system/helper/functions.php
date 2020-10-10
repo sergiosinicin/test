@@ -1,4 +1,8 @@
 <?php
+
+
+use App\System\Library\Image;
+
 function dd()
 {
     echo '<pre>';

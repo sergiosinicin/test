@@ -1,5 +1,7 @@
 <?php
 
+namespace App\System\Library;
+
 class App
 {
     /**
@@ -96,6 +98,7 @@ class App
      */
     public function run()
     {
+        /** @uses \App\Controller\PropertyController */
         return call_user_func_array([$this->controller, $this->method], $this->params);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+namespace App\System\Library;
+
 /**
  * Class Request
  */
@@ -24,14 +26,6 @@ class Request
     public function get($key, $default = null)
     {
         return $this->get[$key] ?? $default;
-    }
-
-    /**
-     * @return array|string
-     */
-    public function getAll()
-    {
-        return $this->get;
     }
 
     /**

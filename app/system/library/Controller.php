@@ -1,5 +1,6 @@
 <?php
 
+namespace App\System\Library;
 /**
  * Base Controller
  * Class Controller

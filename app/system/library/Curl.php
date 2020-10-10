@@ -1,5 +1,6 @@
 <?php
 
+namespace App\System\Library;
 
 class Curl
 {
@@ -59,14 +60,6 @@ class Curl
     public function __destruct()
     {
         $this->close();
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getResult()
-    {
-        return $this->result;
     }
 
     /**

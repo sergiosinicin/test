@@ -1,5 +1,12 @@
 <?php
 
+namespace App\Controller;
+
+use App\Model\PropertyModel;
+use App\Model\PropertyTypeModel;
+use App\System\Library\Controller;
+use App\System\Library\Curl;
+
 
 class PropertyController extends Controller
 {

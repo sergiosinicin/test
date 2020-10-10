@@ -1,5 +1,9 @@
 <?php
 
+namespace App\System\Library;
+
+use Exception;
+
 class Image
 {
     private $file;
@@ -42,65 +46,6 @@ class Image
         } else {
             throw new Exception('Error: Could not load image '.$file.'!');
         }
-    }
-
-    /**
-     *
-     *
-     * @return    string
-     */
-    public function getFile()
-    {
-        return $this->file;
-    }
-
-    /**
-     *
-     * @return false|resource
-     */
-    public function getImage()
-    {
-        return $this->image;
-    }
-
-    /**
-     *
-     *
-     * @return    string
-     */
-    public function getWidth()
-    {
-        return $this->width;
-    }
-
-    /**
-     *
-     *
-     * @return    string
-     */
-    public function getHeight()
-    {
-        return $this->height;
-    }
-
-    /**
-     *
-     *
-     * @return    string
-     */
-    public function getBits()
-    {
-        return $this->bits;
-    }
-
-    /**
-     *
-     *
-     * @return    string
-     */
-    public function getMime()
-    {
-        return $this->mime;
     }
 
     /**
@@ -183,25 +128,5 @@ class Image
 
         $this->width = $width;
         $this->height = $height;
-    }
-
-    /**
-     *
-     *
-     * @param  int  $top_x
-     * @param  int  $top_y
-     * @param  int  $bottom_x
-     * @param  int  $bottom_y
-     */
-    public function crop($top_x, $top_y, $bottom_x, $bottom_y)
-    {
-        $image_old = $this->image;
-        $this->image = imagecreatetruecolor($bottom_x - $top_x, $bottom_y - $top_y);
-
-        imagecopy($this->image, $image_old, 0, 0, $top_x, $top_y, $this->width, $this->height);
-        imagedestroy($image_old);
-
-        $this->width = $bottom_x - $top_x;
-        $this->height = $bottom_y - $top_y;
     }
 }

@@ -1,5 +1,11 @@
 <?php
 
+namespace App\System\Library;
+
+use PDO;
+use PDOException;
+use PDOStatement;
+
 class Database
 {
     private $host = DB_HOSTNAME;
@@ -76,7 +82,7 @@ class Database
      * @param  int  $mode
      * @return array
      */
-    public function resultSet(int $mode = PDO::FETCH_OBJ)
+    public function fetchAll(int $mode = PDO::FETCH_OBJ)
     {
         $this->execute();
         return $this->dbStatement->fetchAll($mode);
@@ -101,6 +107,9 @@ class Database
         return $this->dbStatement->rowCount();
     }
 
+    /**
+     * @return string
+     */
     public function getLastId()
     {
         return $this->dbHandler->lastInsertId();

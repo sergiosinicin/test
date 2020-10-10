@@ -1,5 +1,11 @@
 <?php
 
+namespace App\Model;
+
+use App\System\Library\Database;
+use PDO;
+
+
 class PropertyTypeModel
 {
     /**
@@ -19,7 +25,7 @@ class PropertyTypeModel
     {
         $this->db->query("SELECT * FROM property_type");
 
-        $results = $this->db->resultset(PDO::FETCH_ASSOC);
+        $results = $this->db->fetchAll(PDO::FETCH_ASSOC);
 
         return $results;
     }
@@ -37,20 +43,6 @@ class PropertyTypeModel
     }
 
     /**
-     * @param $id
-     * @return array|null
-     */
-    public function getById(int $id)
-    {
-        $this->db->query('SELECT * FROM property_type WHERE id=:id');
-
-        $this->db->bind(':id', $id);
-        $result = $this->db->single();
-
-        return $result;
-    }
-
-    /**
      * @param $data
      * @return int
      */
@@ -63,12 +55,7 @@ class PropertyTypeModel
                             updated_at = :updated_at
                         WHERE id = :id');
 
-        // Bind Values
-        $this->db->bind(':id', $data['id']);
-        $this->db->bind(':title', $data['title']);
-        $this->db->bind(':description', $data['description']);
-        $this->db->bind(':created_at', $data['created_at']);
-        $this->db->bind(':updated_at', $data['updated_at']);
+        $this->bindValues($data);
 
         $this->db->execute();
 
@@ -85,28 +72,19 @@ class PropertyTypeModel
                         VALUES (:id,:title,:description,:created_at,:updated_at)'
         );
 
+        $this->bindValues($data);
+
+        $this->db->execute();
+
+        return $this->db->getLastId();
+    }
+
+    private function bindValues($data)
+    {
         $this->db->bind(':id', $data['id']);
         $this->db->bind(':title', $data['title']);
         $this->db->bind(':description', $data['description']);
         $this->db->bind(':created_at', $data['created_at']);
         $this->db->bind(':updated_at', $data['updated_at']);
-
-        $this->db->execute();
-
-        return $this->db->rowCount();
-    }
-
-    /**
-     * @param  int  $id
-     * @return int
-     */
-    public function deletePropertyType(int $id)
-    {
-        $this->db->query('DELETE FROM property_type WHERE id = :id');
-        $this->db->bind(':id', $id);
-
-        $this->db->execute();
-
-        return $this->db->rowCount();
     }
 }

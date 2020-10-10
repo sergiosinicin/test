@@ -1,5 +1,11 @@
 <?php
 
+namespace App\Model;
+
+use App\System\Library\Database;
+use PDO;
+
+
 class PropertyModel
 {
     /**
@@ -32,7 +38,7 @@ class PropertyModel
         $this->db->bind(':start', (int) $parameters['start'] ?? 0, PDO::PARAM_INT);
         $this->db->bind(':length', (int) $parameters['length'] ?? 10, PDO::PARAM_INT);
 
-        return $this->db->resultset(PDO::FETCH_ASSOC);
+        return $this->db->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -80,7 +86,7 @@ class PropertyModel
         $sql = 'SELECT COUNT(*) AS total FROM property';
         $this->db->query($sql);
 
-        return $this->db->resultset();
+        return $this->db->fetchAll();
     }
 
     public function getDatatableFormatted(array $parameters = [])
@@ -159,6 +165,7 @@ class PropertyModel
         $this->db->bind(':id', $propertyId);
 
         $this->db->execute();
+
         return $this->db->rowCount();
     }
 
@@ -192,7 +199,8 @@ class PropertyModel
         $this->bindValues($data);
 
         $this->db->execute();
-        return $this->db->rowCount();
+
+        return $this->db->getLastId();
     }
 
     /**
