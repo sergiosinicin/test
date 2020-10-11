@@ -1,10 +1,17 @@
 <?php
+
+use App\System\Library\App;
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+require 'vendor/autoload.php';
+require_once 'app/system/helper/functions.php';
 require_once 'config.php';
-require_once 'app/system/bootstrap.php';
 
-$init = new App();
+//$init = new App();
 
-$property = new PropertyController();
+$property = new  \App\Controller\PropertyController();
 $currentPage = $page = 1;
 while ($page) {
     $currentPage = $page;
