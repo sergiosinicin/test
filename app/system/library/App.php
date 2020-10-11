@@ -2,6 +2,8 @@
 
 namespace App\System\Library;
 
+use App\Controller;
+
 class App
 {
     /**
@@ -9,7 +11,7 @@ class App
      * @param 'MainController'
      * @var $controller
      */
-    protected $controller = 'PropertyController';
+    protected $controller = 'App\Controller\PropertyController';
 
     /**
      * default method
@@ -39,11 +41,11 @@ class App
          * $this->controller
          *
          */
-        if (file_exists(DIR_CONTROLLER.ucwords($url[0]).'.php')) {
-            $this->controller = ucwords($url[0]);
+        if (class_exists('App\Controller\\'.ucwords($url[0]))) {
+            $this->controller = 'App\Controller\\'.ucwords($url[0]);
             unset($url[0]);
         } else {
-            dd(DIR_CONTROLLER.ucwords($url[0]).'.php not found');
+            dd(ucwords($url[0]).' not found');
         }
 
         /**
@@ -51,7 +53,7 @@ class App
          *
          */
 
-        require_once DIR_CONTROLLER.$this->controller.'.php';
+        // require_once DIR_CONTROLLER.$this->controller.'.php';
         $this->controller = new $this->controller;
 
         /**

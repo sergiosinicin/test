@@ -18,8 +18,8 @@ class PropertyController extends Controller
     public function __construct()
     {
         parent::__construct();
-        $this->propertyModel = $this->model('PropertyModel');
-        $this->propertyTypeModel = $this->model('PropertyTypeModel');
+        $this->propertyModel = new PropertyModel();
+        $this->propertyTypeModel = new PropertyTypeModel();
     }
 
     public function index()
@@ -34,7 +34,7 @@ class PropertyController extends Controller
 
         $data['property_type'] = $this->propertyTypeModel->getAll();
 
-        $this->view('property/list', $data);
+        $this->response->output($this->view('property/list', $data));
     }
 
     /**
@@ -108,8 +108,7 @@ class PropertyController extends Controller
             $json = ['error' => 'Unknown id, refresh form'];
         }
 
-        header('Content-Type: application/json');
-        echo json_encode($json);
+        $this->response->jsonOutput($json);
     }
 
     public function delete()
@@ -122,8 +121,7 @@ class PropertyController extends Controller
             $json = ['error' => 'Unknown id, refresh form'];
         }
 
-        header('Content-Type: application/json');
-        echo json_encode($json);
+        $this->response->jsonOutput($json);
     }
 
     public function update()
@@ -142,8 +140,7 @@ class PropertyController extends Controller
             $json = ['error' => 'Unknown id, refresh form'];
         }
 
-        header('Content-Type: application/json');
-        echo json_encode($json);
+        $this->response->jsonOutput($json);
     }
 
     public function create()
@@ -157,8 +154,7 @@ class PropertyController extends Controller
             $json = ['success' => 'Property added successfully'];
         }
 
-        header('Content-Type: application/json');
-        echo json_encode($json);
+        $this->response->jsonOutput($json);
     }
 
     public function getProperties()
@@ -180,8 +176,7 @@ class PropertyController extends Controller
         $data = $this->propertyModel->getDatatableFormatted($parameters);
         $data["draw"] = (int) $this->request->post('draw', 0);
 
-        header('Content-Type: application/json');
-        echo json_encode($data);
+        $this->response->jsonOutput($data);
     }
 
     private function validateForm($data)
