@@ -1,5 +1,6 @@
 <?php
 
+use App\Controller\PropertyController;
 use App\System\Library\App;
 
 error_reporting(E_ALL);
@@ -9,9 +10,7 @@ require 'vendor/autoload.php';
 require_once 'app/system/helper/functions.php';
 require_once 'config.php';
 
-//$init = new App();
-
-$property = new  \App\Controller\PropertyController();
+$property = new  PropertyController();
 $currentPage = $page = 1;
 while ($page) {
     $currentPage = $page;

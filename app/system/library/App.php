@@ -11,7 +11,7 @@ class App
      * @param 'MainController'
      * @var $controller
      */
-    protected $controller = 'App\Controller\PropertyController';
+    protected $controller = 'PropertyController';
 
     /**
      * default method
