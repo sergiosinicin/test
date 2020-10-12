@@ -38,6 +38,7 @@ class PropertyController extends Controller
     }
 
     /**
+     * //TODO: move to service
      * @param  int  $page
      * @param  int  $size
      * @return int
@@ -93,6 +94,7 @@ class PropertyController extends Controller
     }
 
     /**
+     * TODO: rename
      * @param  int  $propertyId
      */
     public function getProperty(int $propertyId)
@@ -157,6 +159,9 @@ class PropertyController extends Controller
         $this->response->jsonOutput($json);
     }
 
+    /**
+     * TODO:rename
+     */
     public function getProperties()
     {
         $parameters = [
@@ -179,6 +184,11 @@ class PropertyController extends Controller
         $this->response->jsonOutput($data);
     }
 
+    /**
+     * TODO: move to validator
+     * @param $data
+     * @return array|bool
+     */
     private function validateForm($data)
     {
         $requiredFields = [

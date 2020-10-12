@@ -85,6 +85,7 @@ class App
             $url = explode('/', filter_var(trim($_GET['url']), FILTER_SANITIZE_URL));
             $url[0] = $url[0].'Controller';
         } else {
+            //TODO: redirect to controller
             $url[0] = $this->controller;
         }
 

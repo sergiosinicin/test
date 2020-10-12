@@ -3,7 +3,10 @@
 
 namespace App\System\Library;
 
-
+/**
+ * Class Response
+ * @package App\System\Library
+ */
 class Response
 {
     public function output($content)

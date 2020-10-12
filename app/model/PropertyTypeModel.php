@@ -30,6 +30,9 @@ class PropertyTypeModel
         return $results;
     }
 
+    /**
+     * @return array
+     */
     public function getAllIndexed()
     {
         $result = [];
@@ -43,6 +46,7 @@ class PropertyTypeModel
     }
 
     /**
+     * //TODO: rename to update
      * @param $data
      * @return int
      */
@@ -63,6 +67,7 @@ class PropertyTypeModel
     }
 
     /**
+     * //TODO: rename to insert
      * @param $data
      * @return int
      */

@@ -42,6 +42,7 @@ class PropertyModel
     }
 
     /**
+     * TODO: ???
      * @param  string  $condition
      * @return mixed
      */
@@ -58,6 +59,7 @@ class PropertyModel
     }
 
     /**
+     * TODO: move to  datatable service
      * @param  array  $parameters
      * @return string
      */
@@ -89,6 +91,11 @@ class PropertyModel
         return $this->db->fetchAll();
     }
 
+    /**
+     * TODO: move to  datatable service
+     * @param  array  $parameters
+     * @return array
+     */
     public function getDatatableFormatted(array $parameters = [])
     {
         $data = $this->fetchAll($parameters);

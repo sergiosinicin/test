@@ -19,6 +19,7 @@ class Controller
     }
 
     /**
+     * TODO: add template adapter
      * @param $view
      * @param  array  $data
      * @return false|string
