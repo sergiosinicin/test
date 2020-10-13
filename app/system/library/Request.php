@@ -29,6 +29,14 @@ class Request
     }
 
     /**
+     * @return array|string
+     */
+    public function getAll()
+    {
+        return $this->get;
+    }
+
+    /**
      * @param $key
      * @param  null  $default
      * @return mixed|null
