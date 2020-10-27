@@ -28,7 +28,6 @@ class ObjectToArrayFormatterTest extends TestCase
         }
 
         $this->arrayOfObjects = $this->prepareArray($this->expectedArray);
-
     }
 
     public function testObjectsToArray()

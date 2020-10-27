@@ -31,26 +31,11 @@ class PropertyTypeModel
     }
 
     /**
-     * @return array
-     */
-    public function getAllIndexed()
-    {
-        $result = [];
-        $types = $this->getAll();
-        foreach ($types as $type) {
-            $id = $type['id'];
-            $result[$id] = $type;
-        }
-
-        return $result;
-    }
-
-    /**
      * //TODO: rename to update
      * @param $data
      * @return int
      */
-    public function updatePropertyType($data)
+    public function update($data)
     {
         $this->db->query('UPDATE property_type 
                         SET title = :title, 
@@ -71,7 +56,7 @@ class PropertyTypeModel
      * @param $data
      * @return int
      */
-    public function addPropertyType($data)
+    public function insert($data)
     {
         $this->db->query('INSERT INTO property_type (id,title,description,created_at,updated_at) 
                         VALUES (:id,:title,:description,:created_at,:updated_at)'

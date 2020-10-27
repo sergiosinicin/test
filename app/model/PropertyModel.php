@@ -88,29 +88,9 @@ class PropertyModel
         $sql = 'SELECT COUNT(*) AS total FROM property';
         $this->db->query($sql);
 
-        return $this->db->fetchAll();
+        return $this->db->single();
     }
 
-    /**
-     * TODO: move to  datatable service
-     * @param  array  $parameters
-     * @return array
-     */
-    public function getDatatableFormatted(array $parameters = [])
-    {
-        $data = $this->fetchAll($parameters);
-        $total = (int) $this->getTotalRows()[0]->total;
-        $filtered = $total;
-        if ($condition = $this->parseConditions($parameters)) {
-            $filtered = $this->getTotalFiltered($condition)['filtered'];
-        }
-
-        return [
-            "recordsTotal" => $total,
-            "recordsFiltered" => $filtered,
-            "data" => $data
-        ];
-    }
 
     /**
      * @param  string  $uuid
@@ -146,7 +126,7 @@ class PropertyModel
      * @param  array  $data
      * @return int
      */
-    public function updateProperty(int $propertyId, array $data)
+    public function update(int $propertyId, array $data)
     {
         $this->db->query('UPDATE property 
                         SET uuid = :uuid, 
@@ -180,7 +160,7 @@ class PropertyModel
      * @param  array  $data
      * @return int
      */
-    public function addProperty(array $data)
+    public function insert(array $data)
     {
         $this->db->query('INSERT INTO property
                         SET uuid = :uuid, 
@@ -204,7 +184,6 @@ class PropertyModel
 
 
         $this->bindValues($data);
-
         $this->db->execute();
 
         return $this->db->getLastId();
@@ -214,12 +193,12 @@ class PropertyModel
      * @param  int  $id
      * @return int
      */
-    public function deleteProperty(int $id)
+    public function delete(int $id)
     {
         $this->db->query('DELETE FROM property WHERE id = :id');
         $this->db->bind(':id', $id);
-
         $this->db->execute();
+
         return $this->db->rowCount();
     }
 

@@ -2,24 +2,19 @@
 
 namespace App\Controller;
 
-use App\Model\PropertyModel;
-use App\Model\PropertyTypeModel;
+use App\Service\PropertyService;
 use App\System\Library\Controller;
-use App\System\Library\Curl;
 
 
 class PropertyController extends Controller
 {
-    /** @var PropertyModel */
-    private $propertyModel;
-    /** @var PropertyTypeModel */
-    private $propertyTypeModel;
+    /** @var PropertyService */
+    private $propertyService;
 
     public function __construct()
     {
         parent::__construct();
-        $this->propertyModel = new PropertyModel();
-        $this->propertyTypeModel = new PropertyTypeModel();
+        $this->propertyService = new PropertyService();
     }
 
     public function index()
@@ -32,82 +27,20 @@ class PropertyController extends Controller
             '/assets/css/datatables.css',
         ];
 
-        $data['property_type'] = $this->propertyTypeModel->getAll();
+        $data['property_type'] = $this->propertyService->getPropertyTypes();
 
         $this->response->output($this->view('property/list', $data));
     }
 
     /**
-     * //TODO: move to service
-     * @param  int  $page
-     * @param  int  $size
-     * @return int
-     */
-    public function populateDb($page = 1, $size = 50)
-    {
-        $propertyTypeItems = $this->propertyTypeModel->getAllIndexed();
-        $size = $size > 100 ? 100 : $size;
-        $url = API_ADDRESS.'?api_key='.API_KEY."&page[number]={$page}&page[size]={$size}";
-        $curl = new Curl($url);
-        $curl->query();
-        $result = [];
-
-        if ($curl->getHttpCode() === 200) {
-            $result = $curl->getJson();
-
-            foreach ($result['data'] as $item) {
-
-                if (isset($item['property_type']['id'])) {
-
-                    $propertyType = $propertyTypeItems[$item['property_type']['id']] ?? null;
-
-                    if ($propertyType) {
-                        if ($propertyType['updated_at'] != $item['property_type']['updated_at']) {
-                            $this->propertyTypeModel->updatePropertyType($item['property_type']);
-                        }
-                    } else {
-                        $this->propertyTypeModel->addPropertyType($item['property_type']);
-                        $propertyTypeItems = $this->propertyTypeModel->getAllIndexed();
-                    }
-
-                    $item['property_type_id'] = $item['property_type']['id'];
-
-                    $item = saveImageByUrl($item);
-
-                    $property = $this->propertyModel->getByUuid($item['uuid']);
-                    if ($property) {
-                        $propertyId = $property->id;
-                        if ($property->updated_at != $item['updated_at']) {
-                            $this->propertyModel->updateProperty($propertyId, $item);
-                        }
-                    } else {
-                        $this->propertyModel->addProperty($item);
-                    }
-                }
-
-            }
-        }
-
-        unset($result['data']);
-
-        return $result;
-    }
-
-    /**
-     * TODO: rename
      * @param  int  $propertyId
      */
-    public function getProperty(int $propertyId)
+    public function show(int $propertyId)
     {
-        if ($propertyId) {
-            $result = $this->propertyModel->getById($propertyId);
-            if ($result) {
-                $json['data'] = $result;
-            } else {
-                $json = ['error' => 'Property not found, refresh page'];
-            }
-        } else {
-            $json = ['error' => 'Unknown id, refresh form'];
+        try {
+            $json['data'] = $this->propertyService->getPropertyById($propertyId);
+        } catch (\Exception $e) {
+            $json['error'] = $e->getMessage();
         }
 
         $this->response->jsonOutput($json);
@@ -115,12 +48,12 @@ class PropertyController extends Controller
 
     public function delete()
     {
-        $propertyId = $this->request->post('property_id');
-        if ($propertyId) {
-            $this->propertyModel->deleteProperty($propertyId);
-            $json = ['success' => 'Property added successfully'];
-        } else {
-            $json = ['error' => 'Unknown id, refresh form'];
+        try {
+            $propertyId = $this->request->post('propertyId');
+            $this->propertyService->deleteProperty($propertyId);
+            $json = ['success' => 'Property deleted successfully'];
+        } catch (\Exception $e) {
+            $json['error'] = $e->getMessage();
         }
 
         $this->response->jsonOutput($json);
@@ -128,93 +61,38 @@ class PropertyController extends Controller
 
     public function update()
     {
-        if ($propertyId = $this->request->post('property_id')) {
+        try {
+            $propertyId = $this->request->post('propertyId');
             $data = $this->request->postAll();
-            $json = $this->validateForm($data);
-            if (true === $json) {
-                $property = $this->propertyModel->getById($propertyId);
-                $data = saveUploadedImage($data);
-                $data = array_merge($property, $data);
-                $this->propertyModel->updateProperty($propertyId, $data);
-                $json = ['success' => 'Property updated successfully'];
-            }
-        } else {
-            $json = ['error' => 'Unknown id, refresh form'];
+            $this->propertyService->updateProperty($propertyId, $data);
+            $json = ['success' => 'Property updated successfully'];
+        } catch (\Exception $e) {
+            $json['error'] = $e->getMessage();
         }
 
         $this->response->jsonOutput($json);
     }
 
-    public function create()
+    public function store()
     {
         $data = $this->request->postAll();
-        $json = $this->validateForm($data);
-        if (true === $json) {
-            $data = saveUploadedImage($data);
-            $data['uuid'] = generateUUID();
-            $this->propertyModel->addProperty($data);
+        try {
+            $this->propertyService->addProperty($data);
             $json = ['success' => 'Property added successfully'];
+        } catch (\Exception $e) {
+            $json['error'] = $e->getMessage();
         }
 
         $this->response->jsonOutput($json);
     }
 
-    /**
-     * TODO:rename
-     */
-    public function getProperties()
+    public function fetch()
     {
-        $parameters = [
-            'start' => $this->request->post('start', 0),
-            'length' => $this->request->post('length', 10),
-            'search' => [],
-        ];
-
-        $columns = $this->request->post('columns');
-        foreach ($columns as $item) {
-            if ($item['searchable'] == 'true' && $item['search']['value']) {
-                $key = $item['data'];
-                $parameters['search'][$key] = $item['search']['value'];
-            }
+        $data = $this->request->getAll();
+        try {
+            $this->propertyService->getProperties($data);
+        } catch (\Exception $e) {
+            $json['error'] = $e->getMessage();
         }
-
-        $data = $this->propertyModel->getDatatableFormatted($parameters);
-        $data["draw"] = (int) $this->request->post('draw', 0);
-
-        $this->response->jsonOutput($data);
     }
-
-    /**
-     * TODO: move to validator
-     * @param $data
-     * @return array|bool
-     */
-    private function validateForm($data)
-    {
-        $requiredFields = [
-            'county',
-            'country',
-            'town',
-            'address',
-//            'longitude',
-//            'latitude',
-            'num_bedrooms',
-            'num_bathrooms',
-            // 'image_thumbnail',
-            //  'image_full',
-            'description',
-            'price',
-            'type',
-            'property_type_id'
-        ];
-
-        foreach ($requiredFields as $field) {
-            if (empty($data[$field])) {
-                return ['error' => 'Please, fill required fields', 'field' => $field];
-            }
-        }
-
-        return true;
-    }
-
 }
